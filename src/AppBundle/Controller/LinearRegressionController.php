@@ -40,8 +40,6 @@ class LinearRegressionController extends Controller
              "GlobalParameters"=>json_decode ("{}")
         ));
 
-        file_put_contents('C:/Users/jvojak/Desktop/text.txt',$data );
-
         $ch = curl_init("https://ussouthcentral.services.azureml.net/workspaces/5db9881656944377969d0cb99a136018/services/4ee66ed9721340c78717be17e07b338c/execute?api-version=2.0&details=true");
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");  
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
