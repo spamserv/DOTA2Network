@@ -12,15 +12,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class LinearRegressionController extends Controller
 {
     /**
-     * @Route("/predict", name="homepage")
+     * @Route("/predict", name="predict")
      * @Method("POST")
      */
     public function predictAction(Request $request)
     {
-
         $response = new JsonResponse();
         $serializer = $this->container->get('serializer');
-        $array = json_decode($request->getContent(), true);
+        $array = json_decode($request->getContent());
+
         $data = json_encode(array(
              "Inputs" => array(
                 "input1" => array("ColumnNames"=> array("hero_0",
@@ -40,6 +40,8 @@ class LinearRegressionController extends Controller
              "GlobalParameters"=>json_decode ("{}")
         ));
 
+        file_put_contents('C:/Users/jvojak/Desktop/text.txt',$data );
+
         $ch = curl_init("https://ussouthcentral.services.azureml.net/workspaces/5db9881656944377969d0cb99a136018/services/4ee66ed9721340c78717be17e07b338c/execute?api-version=2.0&details=true");
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");  
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -50,7 +52,7 @@ class LinearRegressionController extends Controller
             'Content-Type: application/json',                                                                                
             'Content-Length: ' . strlen($data),
             'Authorization:Bearer BivWi4FeUhIht/s2e6PfOC4aTdkLrFJzGcyyBZrzCtN5DOqqDxWNFdRIoctQV4ODJChMi4liLEyN7aly9rMeew==',
-            'Accept: application/json'                                                                     
+            'Accept: application/json'                                                               
         )); 
 
         $data = curl_exec($ch);
@@ -64,6 +66,9 @@ class LinearRegressionController extends Controller
         $res = $serializer->serialize($data, 'json');
         $response->setStatusCode(200);
         $response->setContent($res);
+        $response->headers->set('Access-Control-Allow-Headers', 'origin, content-type, accept');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, PATCH, OPTIONS');
 
         return $response; 
     }
